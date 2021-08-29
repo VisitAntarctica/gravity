@@ -1,4 +1,5 @@
 /* Gravity server config CDN artifacts */
+const { info } = require('console');
 var http = require('http'),
 https = require('https');
 
@@ -18,9 +19,9 @@ const CONFIG = {
 }
 const CONTENT_TYPE = CONFIG.content_type;
 const CONTENT_TYPERE = CONFIG.content_type_re;
-const HTTP_PORT = 5050;
+const HTTP_PORT = CONFIG.http_port;
 var log = ( message , level ) => {
-    level = level || CONFIG.log_level;
+    level = level || "debug";
     var c = console.debug;
     switch( level ){
         case "info":
@@ -59,16 +60,14 @@ var server = http.createServer(function(req, res) {
         
         // set up the response
         //res.setHeader('Access-Control-Allow-Origin', '*' );
-        
+        log("Referer: " + JSON.stringify(ref));
+        log("req.url is " + req.url);
+        log(`user-agent: ${ua}`);
+        log("url searchParams is " + myURL.searchParams.get('u'));
+        log(`Target: ${target}`);
+        log(`PageReferrer: ${pageRef}`);
+        log(`File name: ${fileName}`);
         if(DEBUG_FLAG == true){
-            console.log("Referer: " + JSON.stringify(ref));
-            console.log("req.url is " + req.url);
-            console.log(`user-agent: ${ua}`);
-            console.log("url searchParams is " + myURL.searchParams.get('u'));
-            console.log(`Target: ${target}`);
-            console.log(`PageReferrer: ${pageRef}`);
-            console.log(`File name: ${fileName}`);
-            
             res.statusCode = 400;
             res.end('No more data');
             return;
