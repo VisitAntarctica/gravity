@@ -1,7 +1,9 @@
 /* Gravity server config CDN artifacts */
 const { info } = require('console');
-var http = require('http'),
-https = require('https');
+// var http = require('http'),
+// https = require('https');
+var http = require('follow-redirects').http,
+https = require('follow-redirects').https
 
 const DEBUG_FLAG = false;
 const CONFIG = {
@@ -9,8 +11,8 @@ const CONFIG = {
     'http_port': 5050,
     'content_type_validate': true,
     'content_type': 'video/mp4',
-    'content_type_re': /^video\/mp4/,
-    'user_agent_default': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:91.0) Gecko/20100101 Firefox/91.0',
+    'content_type_re': /^(image|video)\/(mp4|jpe?g|gif|png)/,
+    'user_agent_default': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:109.0) Gecko/20100101 Firefox/118.0',
     'param_keys': {
         'targetUrl': 'u',
         'pageRef': 'p',
@@ -20,6 +22,14 @@ const CONFIG = {
 const CONTENT_TYPE = CONFIG.content_type;
 const CONTENT_TYPERE = CONFIG.content_type_re;
 const HTTP_PORT = CONFIG.http_port;
+
+// defines the regexp used on the provided filename 
+//   to ensure only valid characters are passed back
+//   through the Content-Disposition header
+const FILENAME_STRIP = /["\/\‘’”“…❤️]/igm;
+// replacement for filename/path separators
+const FILENAME_SEP = /\/\\/igm;
+
 var log = ( message , level ) => {
     level = level || "debug";
     var c = console.debug;
@@ -54,10 +64,11 @@ var server = http.createServer(function(req, res) {
         // Referer to be set (default: Referer of Request)
         const pageRef = myURL.searchParams.get( CONFIG.param_keys.pageRef ) || ref;
         // Filename to be returned
-        const fileName = myURL.searchParams.get( CONFIG.param_keys.fileName ) || false;
+        var fileNameIn = myURL.searchParams.get( CONFIG.param_keys.fileName ) || false;
         // Content type to be returned
         //const contentType = myURL.searchParams.get('ct') || CONTENT_TYPE;
-        
+        var fileName = ( fileNameIn !== false ? fileNameIn.replace(FILENAME_STRIP," ").replace(FILENAME_SEP,"-") : false );
+        //fileName = ( fileNameIn !== false ? fileNameIn.replace(FILENAME_SEP,"-") : false );
         // set up the response
         //res.setHeader('Access-Control-Allow-Origin', '*' );
         log("Referer: " + JSON.stringify(ref));
@@ -89,9 +100,13 @@ var server = http.createServer(function(req, res) {
             if (statusCode !== 200) {
                 error = new Error('Request Failed.\n' +
                 `Status Code: ${statusCode}`);
+                res.statusCode = statusCode; 
+                res.end(`Unexpected response code: ${statusCode}`);
             } else if (!CONTENT_TYPERE.test(contentType)) {
                 error = new Error('Invalid content-type.\n' +
                 `Expected ${CONTENT_TYPERE} but received ${contentType}`);
+                res.statusCode = 500;
+                res.end( error );
             }
             if (error) {
                 console.error(error.message);
@@ -105,6 +120,7 @@ var server = http.createServer(function(req, res) {
             if( fileName ){
                 dispo = `attachment; filename="${fileName}"`;
             }
+            console.log(`Content-disposition header: ${dispo}`);
             res.setHeader('content-disposition', dispo);
             res.setHeader('content-type', remote.headers['content-type']);
             // pipe the remote's response into the local response
