@@ -1,0 +1,24 @@
+{
+  "dependencies": {
+    "follow-redirects": "^1.15.3",
+    "node-json-db": "^2.2.0"
+  },
+  "name": "gravity",
+  "description": "NodeJS utility servers",
+  "version": "1.0.0",
+  "main": "gravity-generic.js",
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/VisitAntarctica/gravity.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/VisitAntarctica/gravity/issues"
+  },
+  "homepage": "https://github.com/VisitAntarctica/gravity#readme"
+}
