@@ -89,15 +89,17 @@ var server = http.createServer(function(req, res) {
         // }
         // log( sp , 'table' );
         
+        log( `Request URL is: ${req.url}` , 'info');
+        log( 'Request URL paramters' );
+        log( req.url.split('&') , 'table' );
         // digested data
         var dat = [];
-        dat.push( new log_data("referer" , JSON.stringify(ref)));
+        dat.push( new log_data("input_referer" , JSON.stringify(ref)));
         dat.push( new log_data("user-agent" , ua));
-        dat.push( new log_data("req.url" , req.url.split('&')));
-        dat.push( new log_data("target" , target));
-        dat.push( new log_data("referer" , pageRef ));
+        dat.push( new log_data("target_uri" , target));
+        dat.push( new log_data("page_referer" , pageRef ));
         dat.push( new log_data("filename" , fileName ));
-
+        log( 'Runtime request configuration' );
         log( dat , 'table' );
 
         if(DEBUG_FLAG == true){
