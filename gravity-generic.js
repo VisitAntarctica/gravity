@@ -100,13 +100,6 @@ var server = http.createServer(function(req, res) {
 
         log( dat , 'table' );
 
-        log("Referer: " + JSON.stringify(ref));
-        log("req.url is " + req.url);
-        log(`user-agent: ${ua}`);
-        log("url searchParams is " + myURL.searchParams.get('u'));
-        log(`Target: ${target}`);
-        log(`PageReferrer: ${pageRef}`);
-        log(`File name: ${fileName}`);
         if(DEBUG_FLAG == true){
             res.statusCode = 400;
             res.end('No more data');
