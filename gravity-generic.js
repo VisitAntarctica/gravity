@@ -42,6 +42,9 @@ var log = ( message , level ) => {
             break;
         case "error":
             c = console.error;
+            break;
+        case "table":
+            c = console.table;
     }
     c(message);
 }
