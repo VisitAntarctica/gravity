@@ -80,6 +80,26 @@ var server = http.createServer(function(req, res) {
         //fileName = ( fileNameIn !== false ? fileNameIn.replace(FILENAME_SEP,"-") : false );
         // set up the response
         //res.setHeader('Access-Control-Allow-Origin', '*' );
+
+        // dump contents of known search parameters to the console
+        // log("Input search params: ");
+        // var sp = [];
+        // for( var key in CONFIG.param_keys ){
+        //     sp.push( new log_data( key , myURL.searchParams.get( CONFIG.param_keys[key] )));
+        // }
+        // log( sp , 'table' );
+        
+        // digested data
+        var dat = [];
+        dat.push( new log_data("referer" , JSON.stringify(ref)));
+        dat.push( new log_data("user-agent" , ua));
+        dat.push( new log_data("req.url" , req.url.split('&')));
+        dat.push( new log_data("target" , target));
+        dat.push( new log_data("referer" , pageRef ));
+        dat.push( new log_data("filename" , fileName ));
+
+        log( dat , 'table' );
+
         log("Referer: " + JSON.stringify(ref));
         log("req.url is " + req.url);
         log(`user-agent: ${ua}`);
