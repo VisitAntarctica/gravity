@@ -26,7 +26,7 @@ const HTTP_PORT = CONFIG.http_port;
 // defines the regexp used on the provided filename 
 //   to ensure only valid characters are passed back
 //   through the Content-Disposition header
-const FILENAME_STRIP = /["\/\‘’”“…❤️]/igm;
+const FILENAME_STRIP = /["\/\‘’”“…❤️—✨✌]/igm;
 // replacement for filename/path separators
 const FILENAME_SEP = /\/\\/igm;
 
