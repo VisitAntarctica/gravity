@@ -149,7 +149,7 @@ var server = http.createServer(function(req, res) {
             res.setHeader('content-type', remote.headers['content-type']);
             // pipe the remote's response into the local response
             remote.pipe(res);
-        })
+        });
     } else {
         // method not supported
         res.writeHead(405, "Method not supported");
